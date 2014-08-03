@@ -12,6 +12,12 @@ Game.Controller = function(view, model, canvas) {
   this._cellDimY = Math.floor(canvasHeight / gridRows);
   this._canvas.addEventListener("click", this.clickHandler.bind(this));
   this.initGridCanvas();
+  var startAnimation = $("#start").on("click", this.startAnimation.bind(this));
+}
+
+Game.Controller.prototype.initGridCanvas = function() {
+  this._view.drawGridCanvas(this._model);
+  this._view.drawCellsCanvas(this._model);
 }
 
 Game.Controller.prototype.clickHandler = function(event) {
@@ -26,9 +32,7 @@ Game.Controller.prototype.clickHandler = function(event) {
   this._view.drawCellsCanvas(this._model);
 }
 
-Game.Controller.prototype.initGridCanvas = function() {
-  this._view.drawGridCanvas(this._model);
-  this._view.drawCellsCanvas(this._model);
+Game.Controller.prototype.startAnimation = function() {
+    this._model.updateGridState();
+    this._view.drawCellsCanvas(this._model);
 }
-
-
