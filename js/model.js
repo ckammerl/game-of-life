@@ -43,3 +43,73 @@ Array.matrix = function(num_columns, num_rows, initial) {
 // driver test
 // var matrix = Array.matrix(4,4,0);
 // console.log(matrix);
+
+
+Game.Model.prototype.updateGridState = function()  {
+  var numNeighbours;
+  var cellAlive = true;
+  var cellDead = false;
+  var minNeighbours = 2;
+  var maxNeighbours = 3;
+  var numNeighboursToGetAlive = 3;
+  var nextGenGrid = this._grid
+
+
+  for(var row = 0; row < nextGenGrid.length; row++) {
+    for(var col = 0; col < nextGenGrid[row].length; col++) {
+      numNeighbours = countNeighbours(row, col, nextGenGrid, cellDead, cellAlive);
+      if(nextGenGrid[row][col] === cellDead) {
+        if(numNeighbours === numNeighboursToGetAlive) {
+          nextGenGrid[row][col] = cellAlive;
+        }
+      } else {
+        if(numNeighbours >= minNeighbours && numNeighbours <= maxNeighbours) {
+          nextGenGrid[row][col] = cellAlive;
+        } else {
+          nextGenGrid[row][col] = cellDead;
+        }
+      }
+    }
+  }
+}
+
+// defining modolo operation
+var getModRow = function(row, grid) {
+  return ((row % grid.length) + grid.length) % grid.length;
+}
+
+var getModCol = function(row, col, grid) {
+  return ((col % grid[row].length) + grid[row].length) % grid.length;
+}
+
+var countNeighbours = function(y, x, grid, cellDead, cellAlive) {
+  var total = 0;
+  var neighbours = [];
+
+  // top
+  var neighbourTop = grid[ getModRow( y - 1, grid ) ][ x ];
+  var neighbourDiagTopLeft = grid[ getModRow( y - 1, grid ) ][ getModCol( y, x - 1, grid ) ];
+  var neighbourDiagTopRight = grid[ getModRow( y - 1, grid ) ][ getModCol( y, x + 1, grid ) ];
+
+  // bottom
+  var neighbourBottom = grid[ getModRow( y + 1, grid ) ][x];
+  var neighbourDiagBottomLeft = grid[ getModRow( y + 1, grid ) ][ getModCol( y, x - 1, grid ) ];
+  var neighbourDiagBottomRight = grid[ getModRow( y + 1, grid ) ][ getModCol( y, x + 1, grid ) ];
+
+  // right
+  var neighbourRight = grid[y][ getModCol( y, x + 1, grid ) ];
+
+  // left
+  var neighbourLeft = grid[y][ getModCol( y, x - 1, grid ) ];
+
+  neighbours.push(neighbourTop, neighbourDiagTopLeft, neighbourDiagTopRight, neighbourBottom, neighbourDiagBottomLeft, neighbourDiagBottomRight, neighbourRight, neighbourLeft);
+
+  for(var i in neighbours) {
+    if(neighbours[i] == cellAlive) {
+      total+= 1;
+    }
+  }
+  return total
+}
+
+
