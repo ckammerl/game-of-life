@@ -9,8 +9,8 @@ Game.View = function(canvas) {
 Game.View.prototype.drawGridCanvas = function(model) {
   var gridColumns = model.getColumns();
   var gridRows = model.getRows();
-  var cellDimX = this._canvasWidth / gridColumns;
-  var cellDimY = this._canvasHeight / gridRows;
+  var cellDimX = Math.floor(this._canvasWidth / gridColumns);
+  var cellDimY = Math.floor(this._canvasHeight / gridRows);
 
   for (var x = 0; x <= this._canvasWidth; x += cellDimX) {
     this._canvasContext.moveTo(x, 0);

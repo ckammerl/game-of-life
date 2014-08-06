@@ -4,6 +4,19 @@ Game.Model = function(width, height) {
   this._grid = this.createGrid(width,height);
 }
 
+// 2dim grid with inital value
+Array.matrix = function(num_columns, num_rows, initial) {
+  var a, i, j, mat = [];
+  for(i = 0; i < num_rows; i++) {
+    a = [];
+    for(j = 0; j < num_columns; j++) {
+      a[j] = initial;
+    }
+    mat[i] = a;
+  }
+  return mat;
+}
+
 Game.Model.prototype.createGrid = function(width, height) {
   var grid = Array.matrix(width, height, false); // add initial value false to indicate dead cell
   return grid;
@@ -19,31 +32,11 @@ Game.Model.prototype.getRows = function() {
 
 Game.Model.prototype.setCell = function(row, col, value) {
   this._grid[row][col] = value;
-
 }
 
 Game.Model.prototype.getCell = function(row,col) {
   return this._grid[row][col];
 }
-
-
-// 2dim grid with inital value
-Array.matrix = function(num_columns, num_rows, initial) {
-  var a, i, j, mat = [];
-  for(i = 0; i < num_rows; i++) {
-    a = [];
-    for(j = 0; j < num_columns; j++) {
-      a[j] = initial;
-    }
-    mat[i] = a;
-  }
-  return mat;
-};
-
-// driver test
-// var matrix = Array.matrix(4,4,0);
-// console.log(matrix);
-
 
 Game.Model.prototype.updateGridState = function()  {
   var numNeighbours;
@@ -52,15 +45,16 @@ Game.Model.prototype.updateGridState = function()  {
   var minNeighbours = 2;
   var maxNeighbours = 3;
   var numNeighboursToGetAlive = 3;
-  var nextGenGrid = this._grid
+  var nextGenGrid = Array.matrix(this.getColumns(), this.getRows());
 
-
-  for(var row = 0; row < nextGenGrid.length; row++) {
-    for(var col = 0; col < nextGenGrid[row].length; col++) {
-      numNeighbours = countNeighbours(row, col, nextGenGrid, cellDead, cellAlive);
-      if(nextGenGrid[row][col] === cellDead) {
+  for(var row = 0; row < this.getRows(); row++) {
+    for(var col = 0; col < this.getColumns(); col++) {
+      numNeighbours = countNeighbours(row, col, this._grid, cellDead, cellAlive);
+      if(this._grid[row][col] === cellDead) {
         if(numNeighbours === numNeighboursToGetAlive) {
           nextGenGrid[row][col] = cellAlive;
+        } else {
+          nextGenGrid[row][col] = cellDead;
         }
       } else {
         if(numNeighbours >= minNeighbours && numNeighbours <= maxNeighbours) {
@@ -71,6 +65,7 @@ Game.Model.prototype.updateGridState = function()  {
       }
     }
   }
+  this._grid = nextGenGrid;
 }
 
 // defining modolo operation
@@ -109,7 +104,7 @@ var countNeighbours = function(y, x, grid, cellDead, cellAlive) {
       total+= 1;
     }
   }
-  return total
+  return total;
 }
 
 
