@@ -12,7 +12,9 @@ Game.Controller = function(view, model, canvas) {
   this._cellDimY = Math.floor(canvasHeight / gridRows);
   this._canvas.addEventListener("click", this.clickHandler.bind(this));
   this.initGridCanvas();
-  var startAnimation = $("#start").on("click", this.startAnimation.bind(this));
+  this._timer;
+  this._timerActive = false;
+  $("#animation").on("click", this.startTimerAnimation.bind(this));
 }
 
 Game.Controller.prototype.initGridCanvas = function() {
@@ -32,7 +34,24 @@ Game.Controller.prototype.clickHandler = function(event) {
   this._view.drawCellsCanvas(this._model);
 }
 
-Game.Controller.prototype.startAnimation = function() {
-    this._model.updateGridState();
-    this._view.drawCellsCanvas(this._model);
+Game.Controller.prototype.startTimerAnimation = function() {
+  if(this._timerActive === false) {
+    var TimerCallback = function() {
+      this.runAnimation();
+    };
+    this._timer = setInterval(TimerCallback.bind(this), 500);
+    this._timerActive = true;
+  } else {
+    this.stopTimerAnimation();
+    this._timerActive = false;
+  };
+}
+
+Game.Controller.prototype.runAnimation = function() {
+  this._model.updateGridState();
+  this._view.drawCellsCanvas(this._model);
+}
+
+Game.Controller.prototype.stopTimerAnimation = function () {
+  clearInterval(this._timer);
 }
