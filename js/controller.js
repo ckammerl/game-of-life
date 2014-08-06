@@ -14,7 +14,7 @@ Game.Controller = function(view, model, canvas) {
   this.initGridCanvas();
   this._timer;
   this._timerActive = false;
-  $("#animation").on("click", this.startTimerAnimation.bind(this));
+  $("#run_animation").on("click", this.startTimerAnimation.bind(this));
 }
 
 Game.Controller.prototype.initGridCanvas = function() {
