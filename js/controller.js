@@ -15,7 +15,9 @@ Game.Controller = function(view, model, canvas) {
   this._timer;
   this._timerActive = false;
   $("#run_animation").on("click", this.startTimerAnimation.bind(this));
+  $("#reset_game").on("click", this.resetGame.bind(this));
 }
+
 
 Game.Controller.prototype.initGridCanvas = function() {
   this._view.drawGridCanvas(this._model);
@@ -23,8 +25,9 @@ Game.Controller.prototype.initGridCanvas = function() {
 }
 
 Game.Controller.prototype.clickHandler = function(event) {
-  var canvasClickXPos = event.pageX - this._canvas.offsetLeft;
-  var canvasClickYPos = event.pageY - this._canvas.offsetTop;
+  var canvasOffset = $(this._canvas).offset();
+  var canvasClickXPos = event.pageX - canvasOffset.left;
+  var canvasClickYPos = event.pageY - canvasOffset.top;
   var clickedCellX = Math.floor(canvasClickXPos / this._cellDimX);
   var clickedCellY = Math.floor(canvasClickYPos / this._cellDimY);
 
@@ -54,4 +57,11 @@ Game.Controller.prototype.runAnimation = function() {
 
 Game.Controller.prototype.stopTimerAnimation = function () {
   clearInterval(this._timer);
+}
+
+Game.Controller.prototype.resetGame = function() {
+  var newUserInputGridWidth = 20
+  var newUserInputGridHeight = 20
+  var newCanvas = $('#canvas').attr({width: 400, height: 400});
+  new_controller = new Game.Controller(new Game.View(newCanvas[0]), new Game.Model(newUserInputGridWidth, newUserInputGridHeight), newCanvas[0]);
 }
